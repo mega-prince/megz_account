@@ -1,0 +1,112 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+
+{% block title %} Home {% endblock %}
+
+{% block style %}
+<style>
+    .account-page-section{
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url("{% static 'img/mega5.jpg' %}");
+        background-size: cover;
+        background-position: right;
+    }
+
+    table.table th, table.table td{
+        background-color: rgba(0,0,0,0.3);
+        color: white;
+    }
+
+    .account-page-table-section{
+        width: 100vw;
+    }
+
+    label.form-label{
+        color: white;
+    }
+</style>
+{% endblock %}
+ 
+{% block content %} 
+<section  class="account-page-section">
+    <section class="account-page-table-section">
+        <div class="container-fluid mt-2">
+            <div class="row">
+                <div class="col">
+                    <a href="{% url 'accounts' %}" class="btn btn-primary"> <i class="fa fa-arrow-left"></i> Go back</a>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">S.No.</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                        {% for i in acTable %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td>{{i.reason}}</td>
+                            <td class=" amt p_amt">{{i.amount}}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot class="table-group-divider">
+                            <tr>
+                                <td colspan="2"> <b>Total Amount</b> </td>
+                                <td id="total_amt">&#8377; 0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="account-page-form-section">
+        <div class="container">
+            <form method="post" class="row">
+                {% csrf_token %}
+                <div class="col-md-2">
+                    <label class="form-label" for="sno">S NO</label>
+                    <input type="number" value="{{acTable.count|add:'1'}}" class="form-control" id="sno" name="sno" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="reason">Reason</label>
+                    <input type="text" class="form-control" id="reason" name="reason">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label" for="amount">Amount</label>
+                    <input type="text" class="form-control" id="amount" name="amount">
+                </div>
+                <div class="col-md-2 d-flex align-items-end mt-2">
+                    <button class="btn btn-success">save</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+    var p_amt = document.querySelectorAll(".p_amt");
+    var p_amt_arr = Array.from(p_amt);
+    var p_amt_tot = p_amt_arr.reduce((acc, curr) => {
+        return acc + Number(curr.textContent);
+    }, 0);
+
+    var p_amt_str = p_amt_tot.toLocaleString("hi-IN", {style:"currency", currency:"INR", maximumFractionDigits:0});
+    document.getElementById("total_amt").innerText=p_amt_str;
+</script>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+
+{% block title %} Accounts {% endblock %}
+
+{% block style %}
+<style>
+    .calendar{
+        /* background-color: blue; */
+        height: 85vh;
+    }
+    /* .calendar .cal-head{
+        /* background-color: red; 
+    } 
+    */
+    .calendar .cal-body{
+        /* background-color: green; */
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .calendar .cal-body .cal-body-date{
+        width: 14.28%;
+        height: 14vh;
+         border: 2px solid blue; 
+    }
+    .calendar .cal-body .cal-body-date a{
+        color: white;
+        text-decoration: none;
+    }
+    .cal-body-date h5:nth-child(1){text-align: start; font-size: 15px;}
+    .cal-body-date h5:nth-child(2){text-align: center; font-size: 25px;}
+    .cal-body-date h5:nth-child(3){text-align: end; font-size: 15px;}
+
+    .accounts-page{
+        background: linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)), url("{% static 'img/mega.jpg' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block content %} 
+<section class="my-4 accounts-page">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="calendar">
+                    <div class="go-back">
+                        <a href="{% url 'home' %}" class="btn btn-primary"> <i class="fa fa-arrow-left"></i> Go Back</a>
+                    </div>
+                    <div class="cal-head d-flex justify-content-between align-items-center">
+                        <div class="date">
+                            <h1 class="date-now">today</h1>
+                        </div>
+                        <div class="date-selector">
+                            <input type="date" class="form-control" onchange="calender(new Date(this.value));">
+                        </div>
+                        <div class="day">
+                            <h3 class="day-now">today</h3>
+                        </div>
+                    </div>
+                    <div class="cal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/accounts.js' %}"></script>
+<script>
+    function calender(calDate){
+        var date = document.querySelector(".date-now");
+        var day = document.querySelector(".day-now");
+        var calBody = document.querySelector(".cal-body");
+
+        var D = calDate;
+        var DNow = new Date();
+        
+        date.innerHTML=`${monthGetter(DNow.getMonth())} ${DNow.getDate()}`;
+        day.innerHTML=dayGetter(DNow.getDay());
+
+        var DCurrent = new Date(D.getFullYear(), D.getMonth(), 1);
+        var date_Dcurrent = [];
+        while(DCurrent.getMonth() === D.getMonth()){
+            date_Dcurrent.push(new Date(DCurrent));
+            DCurrent.setDate(DCurrent.getDate()+1);
+        }
+        function goToListPage(date) {
+            console.log(date);
+            loc = location.href+"/"+date;
+            window.location.href=loc
+        }
+        function fetchAmt(year, month, day) {
+            let date = {
+                y:year,
+                m:month+1,
+                d:day
+            }
+            console.log(date)
+
+            fetch("/getAmt",{
+                method:"post",
+                credentials:"same-origin",
+                headers:{
+                    "Accept":"application/json",
+                    "X-Requested-With":"XMLHttpRequest",
+                    "X-CSRFToken":"{{csrf_token}}"
+                },
+                body:JSON.stringify(date)
+            },false).then(res => {
+                res.json();
+            }).then(data=>{
+                // console.log(data);
+            })
+            return 0;
+        }
+        calBody.innerHTML="";
+        for (const i of date_Dcurrent) {
+            calBody.innerHTML += `<div class="cal-body-date">`+
+                                `<a href="{% url 'accounts' %}/${i.toLocaleDateString()}">`+
+                                `<h5>${dayGetter(i.getDay())}</h5>`+
+                                `<h5>${i.getDate()}</h5>`+ 
+                                `<h5>${fetchAmt(i.getFullYear(), i.getMonth(), i.getDate())}</h5></a></div>`
+        }
+}
+
+calender(new Date());
+
+</script>
+{% endblock %}

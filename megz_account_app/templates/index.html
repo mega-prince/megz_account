@@ -1,0 +1,112 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+
+{% block title %} Home {% endblock %}
+
+{% block style %} 
+<style>
+    @font-face {
+        font-family: DragonHunter;
+        src: url("{% static 'font/DragonHunter.otf' %}");
+    }
+    .home-page{
+        background: url("{% static 'img/mega3.jpg' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .home-card{
+        border: 1px solid white;
+        background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5));
+    }
+
+    .home-card .card-body .card-title{
+        color: white;
+        font-family: DragonHunter;
+        background: -webkit-linear-gradient(red,orange,yellow);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .home-card .card-body .card-text{
+        color: white;
+        font-family: DragonHunter;
+        background: -webkit-linear-gradient(red,orange,yellow);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .social-media{
+        position: absolute;
+        width: 100vw;
+        background: rgba(0,0,0,0.5);
+    }
+
+    .social-media ul {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .social-media ul li{
+        list-style: none;
+    }
+
+    .social-media ul li i{
+        padding-top: 15px;
+        font-size: 20px;
+        color: white;
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %} 
+{% include 'component/msg.html' %}
+<section class="social-media">
+    <ul>
+        <li>{% include 'component/sm-facebook.html' %}</li>
+        <li>{% include 'component/sm-instagram.html' %}</li>
+        <li>{% include 'component/sm-twitter.html' %}</li>
+    </ul>
+</section>
+<div class="container d-flex justify-content-center align-items-center home-page" style="height: 100vh;">
+    <div class="row ">
+        <div class="col-lg-auto col-md-3 col-sm-12 px-5">
+            <div class="card home-card mb-3" style="max-width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Total Expenditure</h5>
+                  <p class="card-text amt">{{total}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-auto col-md-3 col-sm-12 px-5">
+            <div class="card home-card mb-3" style="max-width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Monthly Expenditure</h5>
+                  <p class="card-text amt">{{month}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-auto col-md-3 col-sm-12 px-5">
+            <div class="card home-card mb-3" style="max-width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Today Expenditure</h5>
+                  <p class="card-text amt">{{today}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-auto col-md-3 col-sm-12 px-5">
+            <a href="{% url 'accounts' %}" class="text-decoration-none">
+                <div class="card home-card mb-3" style="max-width: 18rem; min-height: 100px;">
+                    <div class="card-body">
+                      <h5 class="card-title">View All</h5>
+                      <p class="card-text text-end"><i class="fa fa-arrow-circle-right"></i></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
